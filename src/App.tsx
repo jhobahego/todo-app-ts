@@ -23,7 +23,9 @@ function App (): JSX.Element {
   const [todos] = useState(mockTodos)
 
   return (
-    <Todos todos={todos} />
+    <div className='todoapp'>
+      <Todos todos={todos} />
+    </div>
   )
 }
 
