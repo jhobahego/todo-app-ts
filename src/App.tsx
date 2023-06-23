@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Todos } from './components/Todos'
-import { type TodoId } from './types'
+import { type TodoId, type Todo } from './types'
 
 const mockTodos = [
   {
@@ -28,9 +28,25 @@ function App (): JSX.Element {
     setTodos(newTodos)
   }
 
+  const handleCompletedToggleTodo = ({ id, completed }: Pick<Todo, 'id' | 'completed'>): void => {
+    const newTodos = todos.map(todo => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed
+        }
+      }
+
+      return todo
+    })
+
+    setTodos(newTodos)
+  }
+
   return (
     <div className='todoapp'>
       <Todos
+        onToggleCompleteTodo={handleCompletedToggleTodo}
         onRemoveTodo={handleRemove}
         todos={todos} />
     </div>
