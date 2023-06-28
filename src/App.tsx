@@ -1,13 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Todos } from './components/Todos'
 import { type TodoId, type Todo, type FilterValue, type TodoTitle } from './types'
 import { Footer } from './components/Footer'
 import { TODO_FILTERS } from './consts'
 import { Header } from './components/Header'
+import { getTodos } from './services/task'
 
 function App (): JSX.Element {
   const [todos, setTodos] = useState<Todo[]>([])
   const [filterSelected, setFilterSelected] = useState<FilterValue>(TODO_FILTERS.ALL)
+
+  useEffect(() => {
+    getTodos()
+      .then(res => { setTodos(res) })
+      .catch((error) => { console.log(error) })
+  }, [])
 
   const handleRemove = ({ id }: TodoId): void => {
     const newTodos = todos.filter(todo => todo.id !== id)
