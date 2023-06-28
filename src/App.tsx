@@ -4,7 +4,7 @@ import { type TodoId, type Todo, type FilterValue, type TodoTitle } from './type
 import { Footer } from './components/Footer'
 import { TODO_FILTERS } from './consts'
 import { Header } from './components/Header'
-import { getTodos } from './services/task'
+import { createTodo, getTodos } from './services/task'
 
 function App (): JSX.Element {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -55,14 +55,12 @@ function App (): JSX.Element {
   })
 
   const addTodo = ({ title }: TodoTitle): void => {
-    const newTodo = {
-      title,
-      id: crypto.randomUUID(),
-      completed: false
-    }
-
-    const newTodos = [...todos, newTodo]
-    setTodos(newTodos)
+    createTodo({ title })
+      .then(newTodo => {
+        const newTodos = [...todos, newTodo]
+        setTodos(newTodos)
+      })
+      .catch((error) => { console.log(error) })
   }
 
   return (
