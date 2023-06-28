@@ -1,5 +1,5 @@
 import axiosInstance from './axios'
-import { type TodoTitle, type Todo } from '../types'
+import type { TodoTitle, Todo, TodoId } from '../types'
 
 export async function getTodos (): Promise<Todo[]> {
   try {
@@ -20,5 +20,13 @@ export async function createTodo ({ title }: TodoTitle): Promise<Todo> {
   } catch (error) {
     console.log(error)
     return { id: '', title: '', completed: false }
+  }
+}
+
+export async function deleteTodo ({ id }: TodoId): Promise<void> {
+  try {
+    await axiosInstance.delete(`/eliminar/${id}`)
+  } catch (error) {
+    console.log(error)
   }
 }

@@ -4,7 +4,7 @@ import { type TodoId, type Todo, type FilterValue, type TodoTitle } from './type
 import { Footer } from './components/Footer'
 import { TODO_FILTERS } from './consts'
 import { Header } from './components/Header'
-import { createTodo, getTodos } from './services/task'
+import { createTodo, deleteTodo, getTodos } from './services/task'
 
 function App (): JSX.Element {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -17,6 +17,9 @@ function App (): JSX.Element {
   }, [])
 
   const handleRemove = ({ id }: TodoId): void => {
+    deleteTodo({ id })
+      .catch((error) => { console.log(error) })
+
     const newTodos = todos.filter(todo => todo.id !== id)
     setTodos(newTodos)
   }
