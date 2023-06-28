@@ -4,7 +4,7 @@ import { type TodoId, type Todo, type FilterValue, type TodoTitle } from './type
 import { Footer } from './components/Footer'
 import { TODO_FILTERS } from './consts'
 import { Header } from './components/Header'
-import { createTodo, deleteTodo, getTodos } from './services/task'
+import { createTodo, deleteAllCompleted, deleteTodo, getTodos } from './services/task'
 
 function App (): JSX.Element {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -12,7 +12,7 @@ function App (): JSX.Element {
 
   useEffect(() => {
     getTodos()
-      .then(res => { setTodos(res) })
+      .then(newTodo => { setTodos(newTodo) })
       .catch((error) => { console.log(error) })
   }, [])
 
@@ -25,6 +25,9 @@ function App (): JSX.Element {
   }
 
   const handleClearCompleted = (): void => {
+    deleteAllCompleted()
+      .catch((error) => { console.log(error) })
+
     const newTodos = todos.filter(todo => !todo.completed)
     setTodos(newTodos)
   }

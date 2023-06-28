@@ -30,3 +30,11 @@ export async function deleteTodo ({ id }: TodoId): Promise<void> {
     console.log(error)
   }
 }
+
+export async function deleteAllCompleted (): Promise<void> {
+  try {
+    await axiosInstance.delete('/eliminar-completadas')
+  } catch (error) {
+    console.log(error)
+  }
+}
