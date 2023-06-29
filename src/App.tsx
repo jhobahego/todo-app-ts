@@ -4,7 +4,7 @@ import { type TodoId, type Todo, type FilterValue, type TodoTitle } from './type
 import { Footer } from './components/Footer'
 import { TODO_FILTERS } from './consts'
 import { Header } from './components/Header'
-import { createTodo, deleteAllCompleted, deleteTodo, getTodos } from './services/task'
+import { completeTodo, createTodo, deleteAllCompleted, deleteTodo, getTodos } from './services/task'
 
 function App (): JSX.Element {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -33,6 +33,9 @@ function App (): JSX.Element {
   }
 
   const handleCompletedToggleTodo = ({ id, completed }: Pick<Todo, 'id' | 'completed'>): void => {
+    completeTodo({ id })
+      .catch((error) => { console.log(error) })
+
     const newTodos = todos.map(todo => {
       if (todo.id === id) {
         return {

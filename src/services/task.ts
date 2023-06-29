@@ -38,3 +38,15 @@ export async function deleteAllCompleted (): Promise<void> {
     console.log(error)
   }
 }
+
+export async function completeTodo ({ id }: TodoId): Promise<void> {
+  try {
+    await axiosInstance.patch(`/completar/${id}`, {}, {
+      headers: {
+        Accept: '*/*'
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
