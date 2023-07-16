@@ -7,20 +7,12 @@ export async function getTodos (): Promise<Todo[]> {
 
     return response.data
   } catch (error) {
-    console.log(error)
     return []
   }
 }
 
-export async function createTodo ({ title }: TodoTitle): Promise<Todo> {
-  try {
-    const response = await axiosInstance.post('', { title })
-
-    return response.data
-  } catch (error) {
-    console.log(error)
-    return { id: '', title: '', completed: false }
-  }
+export async function createTodo ({ title }: TodoTitle) {
+  return await axiosInstance.post('', { title })
 }
 
 export async function deleteTodo ({ id }: TodoId): Promise<void> {
