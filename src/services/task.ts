@@ -27,10 +27,6 @@ export async function deleteAllCompleted (): Promise<void> {
   }
 }
 
-export async function completeTodo ({ id }: TodoId): Promise<void> {
-  try {
-    await axiosInstance.patch(`/completar/${id}`)
-  } catch (error) {
-    console.log(error)
-  }
+export async function completeTodo ({ id }: TodoId) {
+  await axiosInstance.patch(`/completar/${id}`)
 }

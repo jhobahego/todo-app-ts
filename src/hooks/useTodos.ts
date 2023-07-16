@@ -42,7 +42,14 @@ export const useTodos = (): {
 
   const handleCompletedToggleTodo = ({ id, completed }: Pick<Todo, 'id' | 'completed'>): void => {
     completeTodo({ id })
-      .catch((error) => { console.log(error) })
+      .catch((error) => {
+        const axiosError = error as AxiosError
+        if (axiosError.response?.status === 404) {
+          toast.error('tarea no encontrada recargue la pagina')
+        } else {
+          toast.error(axiosError.code)
+        }
+      })
 
     const newTodos = todos.map(todo => {
       if (todo.id === id) {
@@ -55,6 +62,7 @@ export const useTodos = (): {
       return todo
     })
 
+    toast.success('Tarea actualizada correctamente')
     setTodos(newTodos)
   }
 
