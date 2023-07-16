@@ -63,8 +63,9 @@ export const useTodos = (): {
       .then(({ data }) => {
         const newTodos = [
           ...todos,
-          data
+          data.tarea
         ]
+        toast.success(data.mensaje)
         setTodos(newTodos)
       })
       .catch((error) => {
