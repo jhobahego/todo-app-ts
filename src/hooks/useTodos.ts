@@ -21,7 +21,12 @@ export const useTodos = (): {
 
   const handleRemove = ({ id }: TodoId): void => {
     deleteTodo({ id })
-      .catch((error) => { console.log(error) })
+      .catch((error) => {
+        const axiosError = error as AxiosError
+        if (axiosError.response?.status === 404) {
+          toast.error('La tarea ya estaba eliminada')
+        }
+      })
 
     const newTodos = todos.filter(todo => todo.id !== id)
     setTodos(newTodos)

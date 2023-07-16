@@ -15,12 +15,8 @@ export async function createTodo ({ title }: TodoTitle) {
   return await axiosInstance.post('', { title })
 }
 
-export async function deleteTodo ({ id }: TodoId): Promise<void> {
-  try {
-    await axiosInstance.delete(`/eliminar/${id}`)
-  } catch (error) {
-    console.log(error)
-  }
+export async function deleteTodo ({ id }: TodoId) {
+  return await axiosInstance.delete(`/eliminar/${id}`)
 }
 
 export async function deleteAllCompleted (): Promise<void> {
