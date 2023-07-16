@@ -3,6 +3,7 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { useTodos } from './hooks/useTodos'
 import { useFilters } from './hooks/useFilters'
+import { Toaster } from 'sonner'
 
 function App (): JSX.Element {
   const { todos, addTodo, handleClearCompleted, handleCompletedToggleTodo, handleRemove } = useTodos()
@@ -23,6 +24,7 @@ function App (): JSX.Element {
         onFilterChange={handleFilterSelected}
         onClearCompleted={handleClearCompleted}
       />
+      <Toaster position='top-right' />
     </div>
   )
 }

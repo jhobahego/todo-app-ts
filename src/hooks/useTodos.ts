@@ -1,6 +1,8 @@
 import { type TodoId, type Todo, type TodoTitle } from '../types'
 import { completeTodo, createTodo, deleteAllCompleted, deleteTodo, getTodos } from '../services/task'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import { type AxiosError } from 'axios'
 
 export const useTodos = (): {
   todos: Todo[]
@@ -51,13 +53,19 @@ export const useTodos = (): {
     setTodos(newTodos)
   }
 
-  const addTodo = ({ title }: TodoTitle): void => {
+  const addTodo = ({ title }: TodoTitle) => {
     createTodo({ title })
-      .then(newTodo => {
-        const newTodos = [...todos, newTodo]
+      .then(({ data }) => {
+        const newTodos = [
+          ...todos,
+          data
+        ]
         setTodos(newTodos)
       })
-      .catch((error) => { console.log(error) })
+      .catch((error) => {
+        const axiosError = error as AxiosError
+        toast.error(axiosError.response?.data as string)
+      })
   }
 
   return { todos, handleCompletedToggleTodo, handleClearCompleted, handleRemove, addTodo }
