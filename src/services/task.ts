@@ -28,5 +28,5 @@ export async function deleteAllCompleted (): Promise<void> {
 }
 
 export async function completeTodo ({ id }: TodoId) {
-  await axiosInstance.patch(`/completar/${id}`)
+  return await axiosInstance.patch(`/completar/${id}`)
 }

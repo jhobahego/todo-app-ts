@@ -2,7 +2,7 @@ import { type TodoId, type Todo, type TodoTitle } from '../types'
 import { completeTodo, createTodo, deleteAllCompleted, deleteTodo, getTodos } from '../services/task'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { type AxiosError } from 'axios'
+import { type AxiosResponse, type AxiosError } from 'axios'
 
 export const useTodos = (): {
   todos: Todo[]
@@ -41,16 +41,6 @@ export const useTodos = (): {
   }
 
   const handleCompletedToggleTodo = ({ id, completed }: Pick<Todo, 'id' | 'completed'>): void => {
-    completeTodo({ id })
-      .catch((error) => {
-        const axiosError = error as AxiosError
-        if (axiosError.response?.status === 404) {
-          toast.error('tarea no encontrada recargue la pagina')
-        } else {
-          toast.error(axiosError.code)
-        }
-      })
-
     const newTodos = todos.map(todo => {
       if (todo.id === id) {
         return {
@@ -62,8 +52,21 @@ export const useTodos = (): {
       return todo
     })
 
-    toast.success('Tarea actualizada correctamente')
-    setTodos(newTodos)
+    completeTodo({ id })
+      .then((respuesta: AxiosResponse) => {
+        console.log(respuesta.status)
+
+        toast.success('Tarea actualizada correctamente')
+        setTodos(newTodos)
+      })
+      .catch((error) => {
+        const axiosError = error as AxiosError
+        if (axiosError.response?.status === 404) {
+          toast.error('tarea no encontrada recargue la pagina')
+        } else {
+          toast.error(axiosError.code)
+        }
+      })
   }
 
   const addTodo = ({ title }: TodoTitle) => {
