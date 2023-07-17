@@ -1,0 +1,30 @@
+.ts-logo {
+  width: 60px;
+  height: auto;
+}
+.todoapp h1 {
+  top: -160px;
+}
+@media (width < 650px) {
+  .container {
+    width: 90%;
+    margin: 0 auto;
+  }
+  .todoapp h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4em;
+    font-size: 45px;
+    top: -100px;
+  }
+  .ts-logo {
+    width: 40px;
+  }
+  .new-todo {
+    font-size: 20px;
+  }
+  .todo-list li .toggle + label {
+    font-size: 20px;
+  }
+}

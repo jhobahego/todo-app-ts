@@ -10,22 +10,24 @@ function App (): JSX.Element {
   const { activeCount, completedCount, filterSelected, handleFilterSelected, filteredTodos } = useFilters(todos)
 
   return (
-    <div className='todoapp'>
-      <Header saveTodo={addTodo} />
-      <Todos
-        onToggleCompleteTodo={handleCompletedToggleTodo}
-        onRemoveTodo={handleRemove}
-        todos={filteredTodos}
-      />
-      <Footer
-        activeCount={activeCount}
-        completedCount={completedCount}
-        filterSelected={filterSelected}
-        onFilterChange={handleFilterSelected}
-        onClearCompleted={handleClearCompleted}
-      />
-      <Toaster position='top-right' />
-    </div>
+    <section className='container'>
+      <article className='todoapp'>
+        <Header saveTodo={addTodo} />
+        <Todos
+          onToggleCompleteTodo={handleCompletedToggleTodo}
+          onRemoveTodo={handleRemove}
+          todos={filteredTodos}
+        />
+        <Footer
+          activeCount={activeCount}
+          completedCount={completedCount}
+          filterSelected={filterSelected}
+          onFilterChange={handleFilterSelected}
+          onClearCompleted={handleClearCompleted}
+        />
+        <Toaster position='top-right' />
+      </article>
+    </section>
   )
 }
 
