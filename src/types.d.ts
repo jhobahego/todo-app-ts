@@ -1,5 +1,11 @@
 import { type TODO_FILTERS } from './consts'
 
+declare global {
+  interface ImportMeta {
+    env: Record<string, string>
+  }
+}
+
 export interface Todo {
   id: string
   title: string
