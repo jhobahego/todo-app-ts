@@ -11,3 +11,16 @@ export type TodoTitle = Pick<Todo, 'title'>
 export type TodoCompleted = Pick<Todo, 'completed'>
 
 export type FilterValue = typeof TODO_FILTERS[keyof typeof TODO_FILTERS]
+
+export interface ApiResponse {
+  task: Todo
+  message: string
+  success: boolean
+}
+
+interface ApiError {
+  status: number
+  data: {
+    detail: string
+  }
+}
