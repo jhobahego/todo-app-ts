@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios'
 
-const BASE_URL = 'http://localhost:8080/api/tareas'
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
 const axiosIntance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
