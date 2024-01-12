@@ -1,5 +1,6 @@
 import axiosInstance from './axios'
-import type { TodoTitle, Todo, TodoId } from '../types'
+import type { TodoTitle, Todo, TodoId, ApiResponse } from '../types'
+import { type AxiosResponse } from 'axios'
 
 export async function getTodos (): Promise<Todo[]> {
   try {
@@ -11,8 +12,8 @@ export async function getTodos (): Promise<Todo[]> {
   }
 }
 
-export async function createTodo ({ title }: TodoTitle) {
-  return await axiosInstance.post('', { title })
+export async function createTodo ({ title }: TodoTitle): Promise<AxiosResponse<ApiResponse>> {
+  return await axiosInstance.post('', { title }, { headers: { 'Content-Type': 'application/json' } })
 }
 
 export async function deleteTodo ({ id }: TodoId) {
@@ -20,13 +21,9 @@ export async function deleteTodo ({ id }: TodoId) {
 }
 
 export async function deleteAllCompleted (): Promise<void> {
-  try {
-    await axiosInstance.delete('/eliminar-completadas')
-  } catch (error) {
-    console.log(error)
-  }
+  await axiosInstance.delete('/completadas')
 }
 
-export async function completeTodo ({ id }: TodoId) {
+export async function completeTodo ({ id }: TodoId): Promise<AxiosResponse<ApiResponse>> {
   return await axiosInstance.patch(`/completar/${id}`)
 }
