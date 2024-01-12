@@ -1,8 +1,7 @@
-import { type TodoId, type Todo, type TodoTitle } from '../types'
+import { type TodoId, type Todo, type TodoTitle, type ApiError } from '../types'
 import { completeTodo, createTodo, deleteAllCompleted, deleteTodo, getTodos } from '../services/task'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { type AxiosResponse, type AxiosError } from 'axios'
 
 export const useTodos = (): {
   todos: Todo[]
@@ -22,14 +21,15 @@ export const useTodos = (): {
   const handleRemove = ({ id }: TodoId): void => {
     deleteTodo({ id })
       .catch((error) => {
-        const axiosError = error as AxiosError
-        if (axiosError.response?.status === 404) {
-          toast.error('La tarea ya estaba eliminada')
+        const { status, data } = error.response as ApiError
+        if (status === 404) {
+          toast.error(data.detail)
         }
       })
 
     const newTodos = todos.filter(todo => todo.id !== id)
     setTodos(newTodos)
+    toast.success('Tarea eliminada correctamente')
   }
 
   const handleClearCompleted = (): void => {
@@ -38,6 +38,7 @@ export const useTodos = (): {
 
     const newTodos = todos.filter(todo => !todo.completed)
     setTodos(newTodos)
+    toast.success('Tareas eliminadas correctamente')
   }
 
   const handleCompletedToggleTodo = ({ id, completed }: Pick<Todo, 'id' | 'completed'>): void => {
@@ -53,18 +54,16 @@ export const useTodos = (): {
     })
 
     completeTodo({ id })
-      .then((respuesta: AxiosResponse) => {
-        console.log(respuesta.status)
-
-        toast.success('Tarea actualizada correctamente')
+      .then(({ data }) => {
+        toast.success(data.message)
         setTodos(newTodos)
       })
       .catch((error) => {
-        const axiosError = error as AxiosError
-        if (axiosError.response?.status === 404) {
-          toast.error('tarea no encontrada recargue la pagina')
+        const { status, data } = error.response as ApiError
+        if (status === 404) {
+          toast.error(data.detail)
         } else {
-          toast.error(axiosError.code)
+          toast.error('Ha habido un error, intente nuevamente mas tarde')
         }
       })
   }
@@ -74,14 +73,14 @@ export const useTodos = (): {
       .then(({ data }) => {
         const newTodos = [
           ...todos,
-          data.tarea
+          data.task
         ]
-        toast.success(data.mensaje)
+        toast.success(data.message)
         setTodos(newTodos)
       })
       .catch((error) => {
-        const axiosError = error as AxiosError
-        toast.error(axiosError.response?.data as string)
+        const { data } = error.response as ApiError
+        toast.error(data.detail)
       })
   }
 
