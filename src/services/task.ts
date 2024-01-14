@@ -3,13 +3,7 @@ import type { TodoTitle, Todo, TodoId, ApiResponse } from '../types'
 import { type AxiosResponse } from 'axios'
 
 export async function getTodos (): Promise<Todo[]> {
-  try {
-    const response = await axiosInstance.get('')
-
-    return response.data
-  } catch (error) {
-    return []
-  }
+  return await axiosInstance.get('')
 }
 
 export async function createTodo ({ title }: TodoTitle): Promise<AxiosResponse<ApiResponse>> {
