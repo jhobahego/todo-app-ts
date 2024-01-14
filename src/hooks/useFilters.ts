@@ -12,13 +12,13 @@ export const useFilters = (todos: Todo[]): {
   const [filterSelected, setFilterSelected] = useState<FilterValue>(TODO_FILTERS.ALL)
 
   const activeCount = todos.length
-  const completedCount = todos.filter(todo => todo.completed).length
+  const completedCount = Array.from(todos).filter(todo => todo.completed).length
 
   const handleFilterSelected = (filter: FilterValue): void => {
     setFilterSelected(filter)
   }
 
-  const filteredTodos = todos.filter(todo => {
+  const filteredTodos = Array.from(todos).filter(todo => {
     if (filterSelected === 'active' as FilterValue) return !todo.completed
     if (filterSelected === 'completed') return todo.completed
     return todo
