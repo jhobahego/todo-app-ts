@@ -14,7 +14,7 @@ export const useTodos = (): {
 
   useEffect(() => {
     getTodos()
-      .then(newTodo => { setTodos(newTodo) })
+      .then(res => { setTodos(res.data) })
       .catch((error) => {
         const { code } = error
         if (code === 'ERR_NETWORK') {
