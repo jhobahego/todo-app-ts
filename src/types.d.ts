@@ -30,3 +30,5 @@ interface ApiError {
     detail: string
   }
 }
+
+export interface User { id: string, username: string, password: string }
