@@ -5,7 +5,7 @@ export const register = async ({ username, password }: { username: string, passw
 }
 
 export const login = async ({ username, password }: { username: string, password: string }) => {
-  return await axiosIntance.post('/token', { username, password })
+  return await axiosIntance.post('/token', { username, password }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
 }
 
 export const getProfile = async ({ token }: { token: string }) => {
