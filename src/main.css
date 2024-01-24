@@ -136,8 +136,7 @@
 
 .loginBtn:hover,
 .registerBtn:hover {
-  color: #b83f45;
-  background: #f5f5f5;
+  background: rgba(228, 31, 31, 0.7);
 }
 
 .changeAuthBtn:hover {
