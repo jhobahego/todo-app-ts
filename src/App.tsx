@@ -4,6 +4,7 @@ import { Header } from './components/Header'
 import { useTodos } from './hooks/useTodos'
 import { useFilters } from './hooks/useFilters'
 import { Toaster } from 'sonner'
+import { Session } from './components/Session'
 
 function App (): JSX.Element {
   const { todos, addTodo, handleClearCompleted, handleCompletedToggleTodo, handleRemove } = useTodos()
@@ -11,6 +12,7 @@ function App (): JSX.Element {
 
   return (
     <section className='container'>
+      <Session />
       <article className='todoapp'>
         <Header saveTodo={addTodo} />
         <Todos
