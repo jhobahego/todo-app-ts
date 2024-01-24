@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 Modal.setAppElement('#root')
 
 export function AuthModal () {
-  const { signIn, signUp, setIsLogin, isLogin, error } = useSession()
+  const { signIn, signUp, setIsLogin, isLogin } = useSession()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -47,8 +47,6 @@ export function AuthModal () {
           }).catch((error) => { console.log(error) })
           setRegister(false)
         }
-
-        toast.error(error)
       }).catch((error) => {
         console.log(error)
       })

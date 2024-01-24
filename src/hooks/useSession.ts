@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
-import { getProfile, login, register } from '../services/user'
+import { getProfile, login, register } from '@/services/user'
 import { type User } from '@/types'
 import { type AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 export const useSession = (): {
   signIn: ({ username, password }: { username: string, password: string }) => Promise<string>
   signUp: ({ username, password }: { username: string, password: string }) => Promise<User | undefined>
   setIsLogin: (isLogin: boolean) => void
   isLogin: boolean
-  error: string
 } => {
   const [isLogin, setIsLogin] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     const token = localStorage.getItem('token') ?? ''
@@ -37,12 +36,11 @@ export const useSession = (): {
     } catch (error) {
       const { status, data } = (error as AxiosError)?.response as { status: number, data: { detail: string } }
       console.log({ status, data })
-      if (status === 422) { // TODO: Siempre esta entrando en este if aunque el status code no sea 422
-        setError('Debe proporcionar un usuario y contraseña validos')
+      if (status === 422) {
+        toast.error('Debe proporcionar un usuario y contraseña validos')
         return
       }
-
-      setError(data.detail)
+      toast.error(data.detail)
     }
   }
 
@@ -53,12 +51,11 @@ export const useSession = (): {
       return data as User
     } catch (error) {
       const { status, data } = (error as AxiosError)?.response as { status: number, data: { detail: string } }
-      if (status === 422) { // TODO: Siempre esta entrando en este if aunque el status code no sea 422
-        setError('Debe proporcionar un usuario y contraseña validos')
+      if (status === 422) {
+        toast.error('Debe proporcionar un usuario y contraseña validos')
         return
       }
-
-      setError(data.detail)
+      toast.error(data.detail)
     }
   }
 
@@ -66,7 +63,6 @@ export const useSession = (): {
     signIn,
     signUp,
     setIsLogin,
-    isLogin,
-    error
+    isLogin
   }
 }
