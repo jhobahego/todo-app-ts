@@ -13,10 +13,9 @@ export const useTodos = (): {
   addTodo: ({ title }: TodoTitle) => void
 } => {
   const [todos, setTodos] = useState<Todo[]>([])
-  const { isLogin } = useContext(AuthContext) // En el contexto verifico la sesion
+  const { isLogin } = useContext(AuthContext)
 
   useEffect(() => {
-    console.log({ isLogin }) // Este console.log siempre es false
     if (!isLogin) {
       const localTodos = localStorage.getItem('todos')
       if (localTodos != null) {
@@ -30,7 +29,7 @@ export const useTodos = (): {
           toast.error('Ha habido un error, intente nuevamente mas tarde')
         })
     }
-  }, [])
+  }, [isLogin])
 
   const handleRemove = ({ id }: TodoId): void => {
     if (!isLogin) {

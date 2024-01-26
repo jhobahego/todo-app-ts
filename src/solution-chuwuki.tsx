@@ -11,27 +11,25 @@ function TodoApp (): JSX.Element {
   const { todos, addTodo, handleClearCompleted, handleCompletedToggleTodo, handleRemove } = useTodos()
   const { activeCount, completedCount, filterSelected, handleFilterSelected, filteredTodos } = useFilters(todos)
 
-  return (
-    <section className='container'>
-      <Session />
-      <article className='todoapp'>
-        <Header saveTodo={addTodo} />
-        <Todos
-          onToggleCompleteTodo={handleCompletedToggleTodo}
-          onRemoveTodo={handleRemove}
-          todos={filteredTodos}
-        />
-        <Footer
-          activeCount={activeCount}
-          completedCount={completedCount}
-          filterSelected={filterSelected}
-          onFilterChange={handleFilterSelected}
-          onClearCompleted={handleClearCompleted}
-        />
-        <Toaster position='top-right' />
-      </article>
-    </section>
-  )
+  return (<section className='container'>
+  <Session />
+  <article className='todoapp'>
+    <Header saveTodo={addTodo} />
+    <Todos
+      onToggleCompleteTodo={handleCompletedToggleTodo}
+      onRemoveTodo={handleRemove}
+      todos={filteredTodos}
+    />
+    <Footer
+      activeCount={activeCount}
+      completedCount={completedCount}
+      filterSelected={filterSelected}
+      onFilterChange={handleFilterSelected}
+      onClearCompleted={handleClearCompleted}
+    />
+    <Toaster position='top-right' />
+  </article>
+</section>)
 }
 
 function App (): JSX.Element {

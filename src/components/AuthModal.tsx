@@ -31,12 +31,12 @@ export function AuthModal () {
   }
 
   const handleAuth = (event: React.MouseEvent<HTMLButtonElement>, isSignIn: boolean) => {
-    event.preventDefault() // Eso del setLogin() es un problema ciertamente
+    event.preventDefault()
 
     const authFunction = isSignIn ? signIn : signUp
-    authFunction({ username, password }) // ok entiendo, voy a hacer eso
+    authFunction({ username, password })
       .then((data) => {
-        if (data !== undefined) {
+        if (data !== undefined) { // Validación ya que nunca entra al catch, eso ya lo hace el useSession
           if (isSignIn && typeof data === 'string') {
             localStorage.setItem('token', data)
             toast.success('Usuario logueado correctamente')
@@ -133,7 +133,9 @@ export function AuthModal () {
               <button
                 className='loginBtn'
                 type="submit"
-                onClick={(event) => { handleAuth(event, true) }}
+                onClick={(event) => {
+                  handleAuth(event, true)
+                }}
               >
                 Iniciar sesión
               </button>
@@ -153,7 +155,9 @@ export function AuthModal () {
               <button
                 className='registerBtn'
                 type="submit"
-                onClick={(event) => { handleAuth(event, false) }}
+                onClick={(event) => {
+                  handleAuth(event, false)
+                }}
               >
                 Registrarse
               </button>

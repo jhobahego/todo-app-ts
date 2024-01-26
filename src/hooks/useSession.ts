@@ -9,33 +9,14 @@ import AuthContext from '@/context/AuthContext'
 export const useSession = (): {
   signIn: ({ username, password }: { username: string, password: string }) => Promise<string>
   signUp: ({ username, password }: { username: string, password: string }) => Promise<User | undefined>
-  setIsLogin: (isLogin: boolean) => void
-  isLogin: boolean
 } => {
-  const { isLogin, setIsLogin } = useContext(AuthContext)
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token') ?? ''
-
-  //   getProfile({ token }).then((data) => {
-  //     const { status } = data
-  //     if (status === 200) {
-  //       setIsLogin(!isLogin)
-  //     }
-  //   }).catch((error) => {
-  //     const { status } = (error as AxiosError)?.response as { status: number, data: { detail: string } }
-  //     if (status === 401) {
-  //       localStorage.removeItem('token')
-  //       setIsLogin(false)
-  //     }
-  //   })
-  // }, [])
+  const { setIsLogin } = useContext(AuthContext)
 
   const signIn = async ({ username, password }: { username: string, password: string }) => {
     try {
       const { data } = await login({ username, password })
 
-      setIsLogin(true) // que cosa?
+      setIsLogin(true)
       return data.access_token
     } catch (error) {
       const { status, data } = (error as AxiosError)?.response as { status: number, data: { detail: string } }
@@ -65,8 +46,6 @@ export const useSession = (): {
 
   return {
     signIn,
-    signUp,
-    setIsLogin,
-    isLogin
+    signUp
   }
 }
