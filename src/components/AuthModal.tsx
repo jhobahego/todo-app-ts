@@ -1,7 +1,8 @@
 import { LoginIcon } from '@/components/icons/LoginIcon'
 import { LogoutIcon } from '@/components/icons/LogoutIcon'
+import AuthContext from '@/context/AuthContext'
 import { useSession } from '@/hooks/useSession'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import Modal from 'react-modal'
 import { toast } from 'sonner'
@@ -9,7 +10,8 @@ import { toast } from 'sonner'
 Modal.setAppElement('#root')
 
 export function AuthModal () {
-  const { signIn, signUp, setIsLogin, isLogin } = useSession()
+  const { signIn, signUp } = useSession()
+  const { isLogin, setIsLogin } = useContext(AuthContext)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -29,10 +31,10 @@ export function AuthModal () {
   }
 
   const handleAuth = (event: React.MouseEvent<HTMLButtonElement>, isSignIn: boolean) => {
-    event.preventDefault()
+    event.preventDefault() // Eso del setLogin() es un problema ciertamente
 
     const authFunction = isSignIn ? signIn : signUp
-    authFunction({ username, password })
+    authFunction({ username, password }) // ok entiendo, voy a hacer eso
       .then((data) => {
         if (data !== undefined) {
           if (isSignIn && typeof data === 'string') {
