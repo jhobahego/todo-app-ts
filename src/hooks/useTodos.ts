@@ -36,6 +36,7 @@ export const useTodos = (): {
       const newTodos = todos.filter(todo => todo.id !== id)
       setTodos(newTodos)
       localStorage.setItem('todos', JSON.stringify(newTodos))
+      toast.success('Tarea eliminada correctamente')
       return
     }
 
@@ -49,30 +50,29 @@ export const useTodos = (): {
 
     const newTodos = todos.filter(todo => todo.id !== id)
     setTodos(newTodos)
-    localStorage.setItem('todos', JSON.stringify(newTodos))
     toast.success('Tarea eliminada correctamente')
   }
 
   const handleClearCompleted = (): void => {
-    // TODO: Verificar si funciona correctamente los mensajes y eliminacion cuando no se esta logueado
     if (!isLogin) {
       const newTodos = todos.filter(todo => !todo.completed)
       setTodos(newTodos)
       localStorage.setItem('todos', JSON.stringify(newTodos))
+      toast.success('Tareas eliminadas correctamente')
       return
     }
 
     deleteAllCompleted()
       .catch((error) => {
-        const { status } = (error as AxiosError).response as { status: number }
+        const { status, data } = (error as AxiosError).response as { status: number, data: { detail: string } }
         if (status !== 200) {
-          toast.error('Ha habido un error, intente nuevamente mas tarde')
+          return toast.error('Ha habido un error, intente nuevamente mas tarde')
         }
+        toast.error(data.detail)
       })
 
     const newTodos = todos.filter(todo => !todo.completed)
     setTodos(newTodos)
-    localStorage.setItem('todos', JSON.stringify(newTodos))
     toast.success('Tareas eliminadas correctamente')
   }
 
@@ -89,8 +89,28 @@ export const useTodos = (): {
     })
 
     if (!isLogin) {
+      const localTodos = JSON.parse(localStorage.getItem('todos') ?? '[]')
+      const todo = localTodos.find((todo: Todo) => todo.id === id)
+
+      if (todo == null) {
+        toast.error('Tarea no encontrada')
+        return
+      }
+
+      const newTodos = localTodos.map((todo: Todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            completed
+          }
+        }
+
+        return todo
+      })
+
       setTodos(newTodos)
       localStorage.setItem('todos', JSON.stringify(newTodos))
+      toast.success('Tarea actualizada correctamente')
       return
     }
 
@@ -98,40 +118,10 @@ export const useTodos = (): {
       .then(({ data }) => {
         toast.success(data.message)
         setTodos(newTodos)
-        localStorage.setItem('todos', JSON.stringify(newTodos))
       })
       .catch((error) => {
         const { data } = error.response as ApiError
         toast.error(data.detail)
-        // if (code === 'ERR_NETWORK') {
-        //   const localTodos = JSON.parse(localStorage.getItem('todos') ?? '[]')
-        //   const todo = localTodos.find((todo: Todo) => todo.id === id)
-
-        //   if (todo == null) return toast.error('Tarea no encontrada')
-
-        //   const newTodos = localTodos.map((todo: Todo) => {
-        //     if (todo.id === id) {
-        //       return {
-        //         ...todo,
-        //         completed
-        //       }
-        //     }
-
-        //     return todo
-        //   })
-
-        //   setTodos(newTodos)
-        //   localStorage.setItem('todos', JSON.stringify(newTodos))
-        //   toast.success('Tarea actualizada correctamente')
-        //   return
-        // }
-
-        // const { status, data } = error.response as ApiError
-        // if (status === 404) {
-        //   toast.error(data.detail)
-        // } else {
-        //   toast.error('Ha habido un error, intente nuevamente mas tarde')
-        // }
       })
   }
 
