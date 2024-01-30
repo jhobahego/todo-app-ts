@@ -1,5 +1,5 @@
 import axiosInstance from './axios'
-import type { TodoTitle, Todo, TodoId, ApiResponse } from '../types'
+import type { Todo, TodoId, ApiResponse, TodoTitle } from '../types'
 import { type AxiosResponse } from 'axios'
 
 export async function getTodos (): Promise<AxiosResponse<Todo[]>> {
@@ -11,7 +11,8 @@ export async function getUserTodos ({ token }: { token: string }): Promise<Axios
 }
 
 export async function createTodo ({ title }: TodoTitle): Promise<AxiosResponse<ApiResponse>> {
-  return await axiosInstance.post('/api/tareas', { title }, { headers: { 'Content-Type': 'application/json' } })
+  const token = localStorage.getItem('token') ?? ''
+  return await axiosInstance.post('/api/tareas', { title }, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } })
 }
 
 export async function deleteTodo ({ id }: TodoId) {
