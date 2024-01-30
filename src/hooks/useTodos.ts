@@ -1,5 +1,5 @@
 import { type TodoId, type Todo, type TodoTitle, type ApiError } from '../types'
-import { completeTodo, createTodo, deleteAllCompleted, deleteTodo, getTodos } from '../services/task'
+import { completeTodo, createTodo, deleteAllCompleted, deleteTodo, getUserTodos } from '../services/task'
 import { useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { type AxiosError } from 'axios'
@@ -21,14 +21,15 @@ export const useTodos = (): {
       if (localTodos != null) {
         setTodos(JSON.parse(localTodos))
       }
-    } else {
-      getTodos()
-        .then(res => { setTodos(res.data) })
-        .catch((error) => {
-          console.log(error)
-          toast.error('Ha habido un error, intente nuevamente mas tarde')
-        })
+      return
     }
+    const token = localStorage.getItem('token') ?? ''
+    getUserTodos({ token })
+      .then(res => { setTodos(res.data) })
+      .catch((error) => {
+        console.log(error)
+        toast.error('Ha habido un error, intente nuevamente mas tarde')
+      })
   }, [isLogin])
 
   const handleRemove = ({ id }: TodoId): void => {
