@@ -6,6 +6,10 @@ export async function getTodos (): Promise<AxiosResponse<Todo[]>> {
   return await axiosInstance.get('/api/tareas')
 }
 
+export async function getUserTodos ({ token }: { token: string }): Promise<AxiosResponse<Todo[]>> {
+  return await axiosInstance.get('/api/tareas/me', { headers: { Authorization: `Bearer ${token}` } })
+}
+
 export async function createTodo ({ title }: TodoTitle): Promise<AxiosResponse<ApiResponse>> {
   return await axiosInstance.post('/api/tareas', { title }, { headers: { 'Content-Type': 'application/json' } })
 }
