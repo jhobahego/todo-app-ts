@@ -133,14 +133,14 @@ export function AuthModal () {
           >
             <input
               type="text"
-              placeholder="Email"
+              placeholder="nombre de usuario"
               name="username"
               value={formData.username}
               onChange={handleChange}
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Contraseña"
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -148,7 +148,7 @@ export function AuthModal () {
             {register && (
               <input
                 type="password"
-                placeholder="Repeat Password"
+                placeholder="Repite contraseña"
                 name="repeatPassword"
                 value={formData.repeatPassword}
                 onChange={handleChange}
