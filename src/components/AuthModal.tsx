@@ -15,6 +15,7 @@ export function AuthModal () {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
   const [register, setRegister] = useState(false)
   const [login, setLogin] = useState(!isLogin)
 
@@ -32,6 +33,11 @@ export function AuthModal () {
 
   const handleAuth = (event: React.MouseEvent<HTMLButtonElement>, isSignIn: boolean) => {
     event.preventDefault()
+
+    if (register && password !== repeatPassword) {
+      toast.error('Las contraseñas no coinciden')
+      return
+    }
 
     const authFunction = isSignIn ? signIn : signUp
     authFunction({ username, password })
@@ -64,6 +70,10 @@ export function AuthModal () {
 
   const handledPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
+  }
+
+  const handledRepeatPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassword(event.target.value)
   }
 
   const changeAuth = () => {
@@ -128,6 +138,13 @@ export function AuthModal () {
               placeholder="Password"
               onChange={handledPassword}
             />
+            {register && (
+              <input
+                type="password"
+                placeholder="Repeat Password"
+                onChange={handledRepeatPassword}
+              />
+            )}
 
             {login &&
               <button
