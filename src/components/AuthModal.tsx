@@ -2,7 +2,7 @@ import { LoginIcon } from '@/components/icons/LoginIcon'
 import { LogoutIcon } from '@/components/icons/LogoutIcon'
 import AuthContext from '@/context/AuthContext'
 import { useSession } from '@/hooks/useSession'
-import { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import Modal from 'react-modal'
 import { toast } from 'sonner'
@@ -13,12 +13,14 @@ export function AuthModal () {
   const { signIn, signUp } = useSession()
   const { isLogin, setIsLogin } = useContext(AuthContext)
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [repeatPassword, setRepeatPassword] = useState('')
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    repeatPassword: ''
+  })
+
   const [register, setRegister] = useState(false)
   const [login, setLogin] = useState(!isLogin)
-
   const [showModal, setShowModal] = useState(false)
 
   const handleOpenModal = () => {
@@ -34,46 +36,47 @@ export function AuthModal () {
   const handleAuth = (event: React.MouseEvent<HTMLButtonElement>, isSignIn: boolean) => {
     event.preventDefault()
 
-    if (register && password !== repeatPassword) {
+    if (register && formData.password !== formData.repeatPassword) {
       toast.error('Las contraseñas no coinciden')
       return
     }
 
     const authFunction = isSignIn ? signIn : signUp
-    authFunction({ username, password })
+    authFunction(formData)
       .then((data) => {
-        if (data !== undefined) { // Validación ya que nunca entra al catch, eso ya lo hace el useSession
+        if (data !== undefined) {
           if (isSignIn && typeof data === 'string') {
             localStorage.setItem('token', data)
             toast.success('Usuario logueado correctamente')
             return
           }
 
-          signIn({ username, password }).then((data) => {
+          signIn(formData).then((data) => {
             localStorage.setItem('token', data)
             toast.success('Usuario registrado correctamente')
           }).catch((error) => { console.log(error) })
+
           setRegister(false)
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error)
       })
 
     handleCloseModal()
-    setUsername('')
-    setPassword('')
+    setFormData({
+      username: '',
+      password: '',
+      repeatPassword: ''
+    })
   }
 
-  const handledUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value)
-  }
-
-  const handledPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value)
-  }
-
-  const handledRepeatPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRepeatPassword(event.target.value)
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
+    setFormData({
+      ...formData,
+      [name]: value
+    })
   }
 
   const changeAuth = () => {
@@ -131,18 +134,24 @@ export function AuthModal () {
             <input
               type="text"
               placeholder="Email"
-              onChange={handledUsername}
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
             />
             <input
               type="password"
               placeholder="Password"
-              onChange={handledPassword}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
             />
             {register && (
               <input
                 type="password"
                 placeholder="Repeat Password"
-                onChange={handledRepeatPassword}
+                name="repeatPassword"
+                value={formData.repeatPassword}
+                onChange={handleChange}
               />
             )}
 
