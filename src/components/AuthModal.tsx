@@ -3,7 +3,7 @@ import { LogoutIcon } from '@/components/icons/LogoutIcon'
 import AuthContext from '@/context/AuthContext'
 import { useSession } from '@/hooks/useSession'
 import React, { useContext, useState } from 'react'
-
+import Spinner from '@/components/Spinner'
 import Modal from 'react-modal'
 import { toast } from 'sonner'
 
@@ -22,15 +22,23 @@ export function AuthModal () {
   const [register, setRegister] = useState(false)
   const [login, setLogin] = useState(!isLogin)
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleOpenModal = () => {
     setShowModal(true)
   }
 
   const handleCloseModal = () => {
+    if (loading) return // Keep this check to prevent closing during API calls
+
     setLogin(!isLogin)
     setRegister(false)
     setShowModal(false)
+    setFormData({
+      username: '',
+      password: '',
+      repeatPassword: ''
+    })
   }
 
   const handleAuth = (event: React.MouseEvent<HTMLButtonElement>, isSignIn: boolean) => {
@@ -41,34 +49,49 @@ export function AuthModal () {
       return
     }
 
+    setLoading(true)
+
     const authFunction = isSignIn ? signIn : signUp
     authFunction(formData)
       .then((data) => {
-        if (data !== undefined) {
-          if (isSignIn && typeof data === 'string') {
-            localStorage.setItem('token', data)
-            toast.success('Usuario logueado correctamente')
-            return
-          }
-
-          signIn(formData).then((data) => {
-            localStorage.setItem('token', data)
-            toast.success('Usuario registrado correctamente')
-          }).catch((error) => { console.log(error) })
-
-          setRegister(false)
+        if (data === null || data === undefined) {
+          setLoading(false)
+          return
         }
+
+        if (isSignIn && typeof data === 'string') {
+          localStorage.setItem('token', data)
+          toast.success('Usuario logueado correctamente')
+          setLoading(false)
+          handleCloseModal()
+          return
+        }
+
+        // Handle signup success with automatic login
+        signIn(formData)
+          .then((loginData) => {
+            if (loginData.length > 0) {
+              localStorage.setItem('token', loginData)
+              toast.success('Usuario registrado correctamente')
+              setLoading(false)
+              handleCloseModal()
+            } else {
+              // Handle case when login after signup fails
+              toast.error('Registro exitoso pero no se pudo iniciar sesión automáticamente')
+              setLoading(false)
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+            setLoading(false)
+          })
+
+        setRegister(false)
       })
       .catch((error) => {
         console.log(error)
+        setLoading(false)
       })
-
-    handleCloseModal()
-    setFormData({
-      username: '',
-      password: '',
-      repeatPassword: ''
-    })
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,69 +148,89 @@ export function AuthModal () {
           <button
             className='closeModalBtn'
             onClick={handleCloseModal}
+            disabled={loading}
           >
             X
           </button>
           <form
             className='authForm'
           >
-            <input
-              type="text"
-              placeholder="nombre de usuario"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {register && (
-              <input
-                type="password"
-                placeholder="Repite contraseña"
-                name="repeatPassword"
-                value={formData.repeatPassword}
-                onChange={handleChange}
-              />
-            )}
+            {loading
+              ? (
+                <div className="spinnerContainer">
+                  <div className="loadingContent">
+                    <span className="loadingText">Cargando</span>
+                    <Spinner size="medium" color="primary" />
+                  </div>
+                </div>
+                )
+              : (
+                <>
+                  <input
+                    type="text"
+                    placeholder="nombre de usuario"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    disabled={loading}
+                  />
+                  <input
+                    type="password"
+                    placeholder="Contraseña"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    disabled={loading}
+                  />
+                  {register && (
+                    <input
+                      type="password"
+                      placeholder="Repite contraseña"
+                      name="repeatPassword"
+                      value={formData.repeatPassword}
+                      onChange={handleChange}
+                      disabled={loading}
+                    />
+                  )}
 
-            {login &&
-              <button
-                className='loginBtn'
-                type="submit"
-                onClick={(event) => {
-                  handleAuth(event, true)
-                }}
-              >
-                Iniciar sesión
-              </button>
-            }
+                  {login &&
+                    <button
+                      className='loginBtn'
+                      type="submit"
+                      onClick={(event) => {
+                        handleAuth(event, true)
+                      }}
+                      disabled={loading}
+                    >
+                      Iniciar sesión
+                    </button>
+                  }
 
-            {!register && (
-              <button
-                className='changeAuthBtn'
-                type="submit"
-                onClick={() => { changeAuth() }}
-              >
-                ¿Aun no te has registrado?
-              </button>
-            )}
+                  {!register && (
+                    <button
+                      className='changeAuthBtn'
+                      type="submit"
+                      onClick={() => { changeAuth() }}
+                      disabled={loading}
+                    >
+                      ¿Aun no te has registrado?
+                    </button>
+                  )}
 
-            {register && (
-              <button
-                className='registerBtn'
-                type="submit"
-                onClick={(event) => {
-                  handleAuth(event, false)
-                }}
-              >
-                Registrarse
-              </button>
-            )}
+                  {register && (
+                    <button
+                      className='registerBtn'
+                      type="submit"
+                      onClick={(event) => {
+                        handleAuth(event, false)
+                      }}
+                      disabled={loading}
+                    >
+                      Registrarse
+                    </button>
+                  )}
+                </>
+                )}
           </form>
         </div>
       </Modal>
